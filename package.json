@@ -1,0 +1,19 @@
+{
+  "name": "azure-game",
+  "version": "1.0.0",
+  "description": "Azure game, description pending...",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "canvas": "^2.6.0",
+    "datauri": "^2.0.0",
+    "express": "^4.17.1",
+    "jsdom": "^15.2.1",
+    "socket.io": "^2.3.0"
+  }
+}
