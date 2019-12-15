@@ -65,7 +65,12 @@ function create() {
 }
  
 function update() {
+  if(this.players.getChildren().length < 1) {
+    return
+  }
+
   this.players.getChildren().forEach((player) => {
+    doPhysics(this, player)
     const input = players[player.playerId].input;
     if (input.left) {
       player.setAngularVelocity(-300);
@@ -101,6 +106,8 @@ function addPlayer(self, playerInfo) {
   player.setMaxVelocity(200);
   player.playerId = playerInfo.playerId;
   self.players.add(player);
+
+  self.physics.world.enable(self.players.getChildren());
 }
 
 function removePlayer(self, playerId) {
@@ -114,5 +121,13 @@ function removePlayer(self, playerId) {
 function handlePlayerInput(self, playerId, input) {
   players[playerId].input = input;
 }
+
+function doPhysics(self, player) {
+  const neighbors = self.players.getChildren().filter(otherPlayer => otherPlayer.playerId !== player.playerId)
+  neighbors.forEach(neighbor => {
+    self.physics.world.collide(player, neighbor);
+  })
+}
+
 const game = new Phaser.Game(config);
 window.gameLoaded()
