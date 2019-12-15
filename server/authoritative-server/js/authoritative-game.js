@@ -34,14 +34,27 @@ function create() {
       rotation: 0,
       x: Math.floor(Math.random() * 700) + 50,
       y: Math.floor(Math.random() * 500) + 50,
+      input: {
+        left: false,
+        right: false,
+        up: false,
+        down: false
+      },
       playerId: id
     };
     addPlayer(self, players[id]);
+    
     socket.emit('currentPlayers', players);
-    socket.broadcast.emit('newPlayer', players[id]);
 
+    socket.broadcast.emit('newPlayer', players[id]);
+    
+    socket.on('playerInput', function (inputData) {
+      handlePlayerInput(self, id, inputData);
+    });
+    
     socket.on('disconnect', function () {
       removePlayer(self, id);
+      socket.broadcast.emit('playerLeave', id);
       delete players[id];
 
       console.log(`${id} disconnected`);
@@ -49,7 +62,32 @@ function create() {
   });
 }
  
-function update() {}
+function update() {
+  this.players.getChildren().forEach((player) => {
+    const input = players[player.playerId].input;
+    if (input.left) {
+      player.setAngularVelocity(-300);
+    } else if (input.right) {
+      player.setAngularVelocity(300);
+    } else {
+      player.setAngularVelocity(0);
+    }
+   
+    if (input.up) {
+      this.physics.velocityFromRotation(player.rotation + 1.5, 200, player.body.acceleration);
+    } else if (input.down) {
+      this.physics.velocityFromRotation(player.rotation + 1.5, -100, player.body.acceleration);
+    } else {
+      player.setAcceleration(0);
+    }
+   
+    players[player.playerId].x = player.x;
+    players[player.playerId].y = player.y;
+    players[player.playerId].rotation = player.rotation;
+  });
+  this.physics.world.wrap(this.players, 5);
+  io.emit('playerUpdates', players);
+}
 
 function addPlayer(self, playerInfo) {
   const player = self.physics
@@ -70,6 +108,9 @@ function removePlayer(self, playerId) {
     }
   });
 }
- 
+
+function handlePlayerInput(self, playerId, input) {
+  players[playerId].input = input;
+}
 const game = new Phaser.Game(config);
 window.gameLoaded()
