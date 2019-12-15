@@ -3,8 +3,8 @@ const config = {
   autoFocus: false,
   type: Phaser.HEADLESS,
   parent: 'phaser-example',
-  width: 800,
-  height: 600,
+  width: 1600,
+  height: 900,
   physics: {
     default: 'arcade',
     arcade: {
@@ -18,9 +18,11 @@ const config = {
     update: update
   }
 };
+
+const halfPi = Math.PI / 2;
  
 function preload() {
-  this.load.image('sphere', 'assets/sphere.png');
+  this.load.image('ship', 'assets/ship.png');
 }
  
 function create() {
@@ -74,9 +76,9 @@ function update() {
     }
    
     if (input.up) {
-      this.physics.velocityFromRotation(player.rotation + 1.5, 200, player.body.acceleration);
+      this.physics.velocityFromRotation(player.rotation - halfPi, 200, player.body.acceleration);
     } else if (input.down) {
-      this.physics.velocityFromRotation(player.rotation + 1.5, -100, player.body.acceleration);
+      this.physics.velocityFromRotation(player.rotation - halfPi, -100, player.body.acceleration);
     } else {
       player.setAcceleration(0);
     }
@@ -91,7 +93,7 @@ function update() {
 
 function addPlayer(self, playerInfo) {
   const player = self.physics
-    .add.image(playerInfo.x, playerInfo.y, 'sphere')
+    .add.image(playerInfo.x, playerInfo.y, 'ship')
     .setOrigin(0.5, 0.5)
     .setDisplaySize(32, 32);
   player.setDrag(100);

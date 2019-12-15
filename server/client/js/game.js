@@ -1,8 +1,8 @@
 const config = {
   type: Phaser.AUTO,
   parent: 'phaser-example',
-  width: 800,
-  height: 600,
+  width: 1600,
+  height: 900,
   scene: {
     preload: preload,
     create: create,
@@ -13,7 +13,7 @@ const config = {
 const game = new Phaser.Game(config);
  
 function preload() {
-  this.load.image('sphere', 'assets/sphere.png');
+  this.load.image('ship', 'assets/ship.png');
 }
  
 function create() {
@@ -25,12 +25,12 @@ function create() {
   this.socket.on('currentPlayers', function (players) {
     console.log(players)
     Object.entries(players).forEach(function ([id, player]) {
-      displayPlayers(self, player, 'sphere');
+      displayPlayers(self, player, 'ship');
     });
   });
 
   this.socket.on('newPlayer', function (playerInfo) {
-    displayPlayers(self, playerInfo, 'sphere');
+    displayPlayers(self, playerInfo, 'ship');
   });
 
   this.socket.on('playerLeave', function (playerId) {
